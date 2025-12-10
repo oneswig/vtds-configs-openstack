@@ -58,6 +58,8 @@ cluster:
             pools:
               - start: 10.1.1.64
                 end: 10.1.1.254
+      application_metadata:
+        management_network: true
     compute_network:
       network_name: compnet
       tunnel_id: 20
@@ -93,6 +95,7 @@ cluster:
           pool:
             start: 10.2.1.32
             end: 10.2.1.254
+        cluster_network: true
     hardware_network:
       network_name: hwmgtnet
       tunnel_id: 30
@@ -205,8 +208,6 @@ cluster:
         # be included in discovery data and assigned NIDs. Management
         # nodes will not.
         node_role: management
-        # Specify which network is the cluster network for this node
-        cluster_net_interface: compnet
     compute_node:
       pure_base_class: false
       parent_class: rocky_net_boot
@@ -266,5 +267,3 @@ cluster:
         # that the nodes in this class belong to. Used in generating
         # static discovery data.
         node_group: compute
-        # Which network is the cluster network for this node
-        cluster_net_interface: compnet
