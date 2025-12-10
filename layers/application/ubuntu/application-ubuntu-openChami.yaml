@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2025-2026 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,12 +22,12 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 application:
   discovery_networks:
-    internal:
-      network_cidr: 172.25.0.0/24
-      network_name: null
     hardware_management:
       network_cidr: null
       network_name: hwmgtnet
   host:
     network: compnet
     node_class: management_node
+  dns:
+    site: 10.234.0.1
+    public: 169.254.169.254
