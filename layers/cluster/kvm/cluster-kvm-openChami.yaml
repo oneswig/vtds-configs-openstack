@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2025-2026 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -58,6 +58,8 @@ cluster:
             pools:
               - start: 10.1.1.64
                 end: 10.1.1.254
+      application_metadata:
+        management_network: true
     compute_network:
       network_name: compnet
       tunnel_id: 20
@@ -93,6 +95,7 @@ cluster:
           pool:
             start: 10.2.1.32
             end: 10.2.1.254
+        cluster_network: true
     hardware_network:
       network_name: hwmgtnet
       tunnel_id: 30
@@ -147,13 +150,11 @@ cluster:
       node_naming:
         base_name: management
         # In this configuration, there is one management node and it
-        # lives on the same node as the first 4 compute nodes, but we
-        # don't manage it, so it is given a distinct xname in cabinet 1
-        # which does not contain any managed nodes. This is a bit of a
-        # hack, but it keeps it out of the way and makes it unlikely to
-        # be accidentally power cycled.
-        node_names:
-          - x1c0s0b0n0
+        # lives on the same blade as the first 4 compute nodes. It will
+        # be assigned an xname by the Application layer that is beyond
+        # the xnames of managed nodes on this blade to keep managed node
+        # naming consistent across blades.
+        node_names: []
       host_naming:
         base_name: management
       network_interfaces:
@@ -207,8 +208,6 @@ cluster:
         # be included in discovery data and assigned NIDs. Management
         # nodes will not.
         node_role: management
-        # Specify which network is the cluster network for this node
-        cluster_net_interface: compnet
     compute_node:
       pure_base_class: false
       parent_class: rocky_net_boot
@@ -229,39 +228,10 @@ cluster:
       node_naming:
         base_name: compute
         # On OpenCHAMI, node names are xnames because that is
-        # convenient.
-        #
-        # The xnames for the first 4 compute nodes are offset by one
-        # from the normal pattern to acommodate the management node that
-        # is co-resident on the same blade with those compute
-        # nodes. After that, each group of 4 compute nodes (n0 through
-        # n3) lives on a blade (b0) in its own shelf (s1 through
-        # s15). Currently only the first 16 compute nodes are reflected
-        # here. Follow the pattern to extened this up to 64 nodes if
-        # desired.
-        #
-        # This needs to be coordinated with the application metadata in
-        # the provider layer config to make sure Blade xnames match up
-        # with node xnames. Blade xnames are currently defined there up
-        # to 16 blades (support for 64 nodes). Currently defined 16
-        # compute nodes (four per blade 'n0' through 'n3').
-        node_names:
-          - x2000c0s0b0n0
-          - x2000c0s0b0n1
-          - x2000c0s0b0n2
-          - x2000c0s0b0n3
-          - x2000c0s0b1n0
-          - x2000c0s0b1n1
-          - x2000c0s0b1n2
-          - x2000c0s0b1n3
-          - x2000c0s0b2n0
-          - x2000c0s0b2n1
-          - x2000c0s0b2n2
-          - x2000c0s0b2n3
-          - x2000c0s0b3n0
-          - x2000c0s0b3n1
-          - x2000c0s0b3n2
-          - x2000c0s0b3n3
+        # convenient, and those xnames are computed by the Application
+        # layer and injected into the cluster layer during
+        # consolidate(). Don't configure any node names here...
+        node_names: []
       host_naming:
         base_name: compute
       network_interfaces:
@@ -297,5 +267,3 @@ cluster:
         # that the nodes in this class belong to. Used in generating
         # static discovery data.
         node_group: compute
-        # Which network is the cluster network for this node
-        cluster_net_interface: compnet
