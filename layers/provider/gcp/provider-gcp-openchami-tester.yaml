@@ -1,0 +1,98 @@
+#
+# MIT License
+#
+# (C) Copyright 2026 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+# This configuration sets up a platform from which to run OpenCHAMI
+# tests from within GCP. This platform is super simple. It uses a single
+# GCP instance (Virtual Blade in vTDS parlance) as a bastion node for
+# running vTDS commands to create OpenCHAMI systems. There are no
+# Virtual Nodes in the system because they aren't needed and just add
+# time and complexity to setting things up. We are basically just
+# leveraging vTDS for deploying a simple GCP project with a single GCP
+# instance in it.
+provider:
+  # There is a configuration file called
+  #
+  #   provider-gcp-hpe-org.yaml
+  #
+  # In this same directory that contains the organization settings for
+  # all HPE GCP based vTDS systems. Since we are going to run this from
+  # within the HPE organization, Use that to set up the 'organization'
+  # and 'project' settings. Use this file to set up the rest of the test
+  # platform configuration.
+  organization: {}
+  project: {}
+  blade_interconnects:
+    mock-interconnect:
+      # A blade interconnect because we need to have one even though we
+      # won't be using it.
+      parent_class: base-interconnect
+      pure_base_class: false
+      network_name: "mock-interconnect"
+      description: |
+        A blade interconnect based on 'base interconnect' just so we
+        have one.
+      routes: []
+  virtual_blades:
+    # Host blade. This "blade" will be where we do all of our
+    # work. There will be just one of them and it will be small.
+    host-blade:
+      vm:
+        machine_type: n1-standard-4
+        boot_disk:
+          disk_size_gb: 100
+      service_account_iam:
+        # Need "roles/billing.user" on 'billing' to permit the SA to
+        # create new vTDS clusters.
+        billing:
+          - "roles/billing.user"
+        # Need
+        #    "roles/resourcemanager.folderViewer"
+        #    "roles/resourcemanager.projectCreator"
+        # on the Clusters Folder to permit the SA to create new vTDS clusters
+        clusters_folder:
+          - "roles/resourcemanager.folderViewer"
+          - "roles/resourcemanager.projectCreator"
+        # Need "roles/resourcemanager.organizationViewer" on the
+        # organization to permit the SA to create new vTDS clusters.
+        organization:
+          - "roles/resourcemanager.organizationViewer"
+        # Need
+        #    "roles/secretmanager.secretAccessor"
+        #    "roles/secretmanager.secretVersionManager"
+        #    "roles/storage.admin"
+        #    "roles/viewer"
+        # on the Seed Project to permit the SA to create new vTDS clusters.
+        seed_project:
+          - "roles/secretmanager.secretAccessor"
+          - "roles/secretmanager.secretVersionManager"
+          - "roles/storage.admin"
+          - "roles/viewer"
+      parent_class: base-blade
+      pure_base_class: false
+      blade_interconnect:
+        subnetwork: "mock-interconnect"
+        ip_addrs:
+        - 10.255.1.1
+      count: 1
+      name_prefix: "openchami-tester"
+      hostname: openchami-tester
