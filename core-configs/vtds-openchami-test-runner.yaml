@@ -1,0 +1,123 @@
+#
+# MIT License
+#
+# (C) Copyright 2026 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+# A core configuration for deploying a test-runner vTDS system for use
+# in OpenCHAMI automated testing.
+core:
+  layers:
+    base:
+      package: vtds-base
+      module: vtds_base
+      source_type: git
+      metadata:
+        url: "git@github.com:Cray-HPE/vtds-base.git"
+        version: main
+    core:
+      package: vtds-core
+      module: vtds_core
+      source_type: git
+      metadata:
+        url: "git@github.com:Cray-HPE/vtds-core.git"
+        version: main
+    provider:
+      package: vtds-provider-gcp
+      module: vtds_provider_gcp
+      source_type: git
+      metadata:
+        url: "git@github.com:Cray-HPE/vtds-provider-gcp.git"
+        version: main
+    platform:
+      package: vtds-platform-ubuntu
+      module: vtds_platform_ubuntu
+      source_type: git
+      metadata:
+        url: "git@github.com:Cray-HPE/vtds-platform-ubuntu.git"
+        version: main
+    cluster:
+      package: vtds-cluster-mock
+      module: vtds_cluster_mock
+      source_type: git
+      metadata:
+        url: "git@github.com:Cray-HPE/vtds-cluster-mock.git"
+        version: main
+    application:
+      package: vtds-application-testrunner
+      module: vtds_application_testrunner
+      source_type: git
+      metadata:
+        url: "git@github.com:Cray-HPE/vtds-application-testrunner.git"
+        version: main
+  configurations:
+  - type: git
+    metadata:
+      # This brings in the HPE specific settings needed to build an HPE
+      # project on GCP.
+      repo: git@github.com:Cray-HPE/vtds-configs.git
+      version: main
+      path: layers/provider/gcp/provider-gcp-hpe-org.yaml
+  - type: git
+    metadata:
+      # This brings in the vTDS config for deploying the OpenCHAMI
+      # Tester project for use in running OpenCHAMI CI/CD Pipeline
+      # tests.
+      repo: git@github.com:Cray-HPE/vtds-configs.git
+      version: main
+      path: layers/provider/gcp/provider-gcp-openchami-tester.yaml
+  - type: git
+    metadata:
+      # This brings in the FSM / SCS Connectivity Demo configuration
+      # for the platform layer.
+      repo: git@github.com:Cray-HPE/vtds-configs.git
+      version: main
+      path: layers/platform/ubuntu/platform-ubuntu-openchami-tester.yaml
+  - type: git
+    metadata:
+      # This brings in the FSM / SCS Connectivity Demo configuration
+      # for the cluster layer.
+      repo: git@github.com:Cray-HPE/vtds-configs.git
+      version: main
+      path: layers/cluster/mock/cluster-mock-openchami-tester.yaml
+  - type: git
+    metadata:
+      # This brings in the FSM / SCS Connectivity Demo configuration
+      # for the application layer.
+      repo: git@github.com:Cray-HPE/vtds-configs.git
+      version: main
+      path: layers/application/ubuntu/application-ubuntu-openchami-tester.yaml
+  - type: command-line
+    # Bring in any configuration files / sources listed on the command
+    # line and merge them on top of what has been listed here. This
+    # overlay will override matching settings in the above sources.
+    metadata: {}
+  - type: core-config
+    # If there is anything outside the 'core' section of the Core
+    # Configuration apply it last to override anything seen up to this
+    # point.
+    metadata: {}
+provider:
+  terragrunt:
+    terraform_dummy_version: latest
+    terragrunt_dummy_version: latest
+  project:
+    base_name: openchami-test-runner
+    random_project_id: false

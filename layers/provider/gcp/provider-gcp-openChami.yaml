@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2025 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2025-2026 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,14 +22,12 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 provider:
-  # There is a configuration file called
-  #
-  #   provider-gcp-hpe-org.yaml
-  #
-  # In this same directory that contains the organization settings for
-  # all HPE GCP based vTDS systems. Use that to set up the
-  # 'organization' and 'project' settings. Use this file to set up the
-  # rest of the POC configuration.
+  # This configuration provides the organization independent
+  # configuration for the GCP provider layer needed to run
+  # OpenCHAMI. Your organization should also provide the GCP
+  # organization specific configuration that allows deployment of
+  # resources into GCP.  See the 'vtds-provider-gcp' README.md file for
+  # more information on this.
   organization: {}
   project: {}
   blade_interconnects:
