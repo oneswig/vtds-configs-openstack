@@ -72,6 +72,10 @@ provider:
         clusters_folder:
           - "roles/resourcemanager.folderViewer"
           - "roles/resourcemanager.projectCreator"
+        # Access to project secrets so that the service account can
+        # obtain the GitHub Deploy private key from the secret manager.
+        cluster_project:
+          - "roles/secretmanager.secretAccessor"
         # Need "roles/resourcemanager.organizationViewer" on the
         # organization to permit the SA to create new vTDS clusters.
         organization:
@@ -96,3 +100,31 @@ provider:
       count: 1
       name_prefix: "openchami-tester"
       hostname: openchami-tester
+  secrets:
+    github_deploy_key:
+      # The SSH private key used by this project as a Deploy key to talk
+      # specifically to the 'openchami-vtds' GitHub repository. This is
+      # used by OpenCHAMI test runs so they can push back results to
+      # GitHub. The corresponding public key is stored separately mostly
+      # for convenience of looking it up for registering it with GitHub
+      # as 'github-deploy-key-public'.
+      name: github-deploy-key
+      # No labels needed
+      labels: {}
+      # Content provided by the application layer
+      annotations:
+        layer: application
+      application_metadata: {}
+    github_deploy_key_public:
+      # The SSH public key that goes with the 'github-deploy-key'
+      # private key for use in setting up a Deploy key to talk
+      # specifically to the 'openchami-vtds' GitHub repository. Grab
+      # this and register it with the GitHub 'openchami-vtds' repo as a
+      # Deployment key.
+      name: github-deploy-key-public
+      # No labels needed
+      labels: {}
+      # Content provided by the Application layer
+      annotations:
+        layer: application
+      application_metadata: {}
