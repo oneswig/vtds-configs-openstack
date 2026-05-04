@@ -57,7 +57,7 @@ provider:
       blade_interconnect:
         subnetwork: "blade-interconnect"
         lab_net_ipv4: "stackhpc-academy"
-        lab_subnet: "stackhpc-ipv4-academy-subnet"
+        lab_subnet: "034fdc5e-ad1f-431b-b3dd-3d1549fe33e7"
         ip_addrs:
           - "172.16.4.4"
           - "172.16.4.5"
