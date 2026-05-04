@@ -48,9 +48,16 @@ provider:
     # test systems.
     host-blade:
       count: 1
+      lab_flavor: "general.v1.large"
+      boot_labs_from_volume: true
+      image_id: "b709c1c0-f045-4918-9297-43f52a730241"
+      image_name: "Ubuntu-24.04"
+      lab_data_vol: 100
       lab_prefix: "host-blade"
       blade_interconnect:
         subnetwork: "blade-interconnect"
+        lab_net_ipv4: "stackhpc-academy"
+        lab_subnet: "stackhpc-ipv4-academy-subnet"
         ip_addrs:
           - "172.16.4.4"
           - "172.16.4.5"
@@ -82,77 +89,3 @@ provider:
           - x2000c0s3b1
           - x2000c0s3b2
           - x2000c0s3b3
-    # Compute blade. This is an alternative blade class that can host
-    # Compute nodes. Using Compute Blades for systems with more than 4
-    # compute nodes allows the Managment node to live on a different
-    # set of blades from the Compute nodes and allows up to 16 Compute
-    # nodes to be configured into the vTDS cluster. To use Compute
-    # blades for Compute nodes, set the host blade blade class to
-    # 'compute-blade' instead of 'host-blade' in the cluster
-    # configuration of your configuration overlay and set the number of
-    # compute blade instances to whatever is appropriate for your
-    # cluster in the platform configuration, something like:
-    #
-    # provider:
-    #   virtual_blades:
-    #     compute-blade:
-    #       count: 1
-    # cluster:
-    #   node_classes:
-    #     compute_node:
-    #       host_blade:
-    #         blade_class: compute-blade
-    compute-blade:
-      vm:
-        machine_type: n1-standard-16
-        boot_disk:
-          disk_size_gb: 1000
-      parent_class: base-blade
-      pure_base_class: false
-      blade_interconnect:
-        subnetwork: "blade-interconnect"
-        ip_addrs:
-        - 10.255.1.1
-        - 10.255.1.2
-        - 10.255.1.3
-        - 10.255.1.4
-        - 10.255.1.5
-        - 10.255.1.6
-        - 10.255.1.7
-        - 10.255.1.8
-        - 10.255.1.9
-        - 10.255.1.10
-        - 10.255.1.11
-        - 10.255.1.12
-        - 10.255.1.13
-        - 10.255.1.14
-        - 10.255.1.15
-        - 10.255.1.16
-      count: 0
-      name_prefix: "compute-blade"
-      hostname: compute-blade
-      # OpenCHAMI Application metadata for the Virtual Blades
-      application_metadata:
-        # Map these xnames onto the Cluster Layer node names (which are
-        # xnames in OpenCHAMI). These should be the parent names for the
-        # Virtual Nodes that reside on the respective Virtual Blades.
-        #
-        # The agreed upon scheme here is that blades are 0 through 3 and
-        # in their respective shelves.
-        xnames:
-          - x4000c0s0b0
-          - x4000c0s0b1
-          - x4000c0s0b2
-          - x4000c0s0b3
-          - x4000c0s1b0
-          - x4000c0s1b1
-          - x4000c0s1b2
-          - x4000c0s1b3
-          - x4000c0s2b0
-          - x4000c0s2b1
-          - x4000c0s2b2
-          - x4000c0s2b3
-          - x4000c0s3b0
-          - x4000c0s3b1
-          - x4000c0s3b2
-          - x4000c0s3b3
