@@ -49,6 +49,8 @@ provider:
     host-blade:
       count: 1
       lab_prefix: "host-blade"
+      blade_interconnect:
+        subnetwork: "blade-interconnect"
 
       # OpenCHAMI Application metadata for the Virtual Blades
       application_metadata:
