@@ -26,7 +26,6 @@ provider:
   boot_labs_from_volume: true
   image_id: "b709c1c0-f045-4918-9297-43f52a730241"
   image_name: "Ubuntu-24.04"
-  lab_count: 1
   lab_data_vol: 100
   lab_net_ipv4: "stackhpc-ipv4-geneve"
   lab_prefix: "openchami"
