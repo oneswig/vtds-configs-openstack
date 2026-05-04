@@ -51,6 +51,11 @@ provider:
       lab_prefix: "host-blade"
       blade_interconnect:
         subnetwork: "blade-interconnect"
+        ip_addrs:
+          - "172.16.4.4"
+          - "172.16.4.5"
+          - "172.16.4.6"
+          - "172.16.4.7"
 
       # OpenCHAMI Application metadata for the Virtual Blades
       application_metadata:
